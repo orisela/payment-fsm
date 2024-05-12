@@ -1,22 +1,22 @@
-import { usePayment } from './payment-fsm';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import PaymentsRoute from './routes/PaymentsRoute';
+import PaymentRoute from './routes/PaymentRoute';
+
+import { makeServer } from './mock-api';
+
+if (process.env.NODE_ENV !== 'production') {
+  makeServer({ environment: process.env.NODE_ENV });
+}
 
 function App() {
-  const { isLoading, state, onNextClick, onPrevClick, onSaveClick } =
-    usePayment();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div>
-      <h1>Current State: {state} </h1>
-      {onSaveClick && (
-        <button onClick={() => onSaveClick(`save ${state}`)}>Save</button>
-      )}
-      {onPrevClick && <button onClick={onPrevClick}>Prev</button>}
-      {onNextClick && <button onClick={onNextClick}>Next</button>}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<PaymentsRoute />} />
+        <Route path="/:paymentId" element={<PaymentRoute />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
