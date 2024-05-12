@@ -30,18 +30,27 @@ export function makeServer({ environment }: { environment: string }) {
       payments: Model,
     },
     seeds(server) {
-      payments.forEach((payment) => server.create('payment', { ...payment }));
+      payments.forEach((payment) => server.create('payment', payment));
     },
     routes() {
       this.namespace = 'api/payments';
 
-      this.get('/', (schema) => schema.all('payments'));
+      this.get('/', (schema) => schema.all('payments').models);
 
-      this.get('/:id', (schema, request) =>
-        schema.find('payments', request.params.id)
+      this.get('/:id', (schema, request) => {
+        const payment = schema.find('payments', request.params.id);
+
+        if (payment) {
+          return payment.attrs;
+        }
+
+        return null;
+      });
+
+      this.post(
+        '/',
+        (schema) => schema.create('payments', createPayment()).attrs
       );
-
-      this.post('/', (schema) => schema.create('payments', createPayment()));
 
       this.patch('/:id', (schema, request) => {
         const newAttrs = JSON.parse(request.requestBody);
@@ -50,9 +59,10 @@ export function makeServer({ environment }: { environment: string }) {
 
         if (payment) {
           payment.update(newAttrs);
+          return payment.attrs;
         }
 
-        return payment;
+        return null;
       });
     },
   });
