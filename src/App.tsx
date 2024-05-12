@@ -1,13 +1,16 @@
 import { usePayment } from './payment-fsm';
 
 function App() {
-  const { state, setNextState, setPrevState } = usePayment();
+  const { state, onNextClick, onPrevClick, onSaveClick } = usePayment();
 
   return (
     <div>
       <h1>Current State: {state} </h1>
-      {setPrevState && <button onClick={setPrevState}>Prev</button>}
-      {setNextState && <button onClick={setNextState}>Next</button>}
+      {onSaveClick && (
+        <button onClick={() => onSaveClick(`save ${state}`)}>Save</button>
+      )}
+      {onPrevClick && <button onClick={onPrevClick}>Prev</button>}
+      {onNextClick && <button onClick={onNextClick}>Next</button>}
     </div>
   );
 }

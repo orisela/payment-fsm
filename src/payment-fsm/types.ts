@@ -1,5 +1,5 @@
-export enum PaymentStates {
-  DRAFT = 'draft',
+export enum PaymentStatesEnum {
+  SET_PAYMENT_AMOUNT = 'set_payment_amount',
   SET_FUNDING_SOURCE = 'set_funding_source',
   SET_DELIVERY_METHOD = 'set_delivery_method',
   REVIEW = 'review',
@@ -7,8 +7,9 @@ export enum PaymentStates {
 }
 
 type TransitionHandlers = {
-  nextState?: PaymentStates;
-  prevState?: PaymentStates;
+  nextState?: PaymentStatesEnum;
+  prevState?: PaymentStatesEnum;
+  onSave?: (value: string) => Promise<void>;
 };
 
-export type Transitions = Record<PaymentStates, TransitionHandlers>;
+export type Transitions = Record<PaymentStatesEnum, TransitionHandlers>;

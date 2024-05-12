@@ -1,32 +1,41 @@
 import { useState } from 'react';
-import { PaymentStates, Transitions } from './types';
+import { PaymentStatesEnum, Transitions } from './types';
 
 const transitions: Transitions = {
-  [PaymentStates.DRAFT]: { nextState: PaymentStates.SET_FUNDING_SOURCE },
-  [PaymentStates.SET_FUNDING_SOURCE]: {
-    nextState: PaymentStates.SET_DELIVERY_METHOD,
-    prevState: PaymentStates.DRAFT,
+  [PaymentStatesEnum.SET_PAYMENT_AMOUNT]: {
+    nextState: PaymentStatesEnum.SET_FUNDING_SOURCE,
+    onSave: async (value: string) => console.log(value),
   },
-  [PaymentStates.SET_DELIVERY_METHOD]: {
-    nextState: PaymentStates.REVIEW,
-    prevState: PaymentStates.SET_FUNDING_SOURCE,
+  [PaymentStatesEnum.SET_FUNDING_SOURCE]: {
+    nextState: PaymentStatesEnum.SET_DELIVERY_METHOD,
+    prevState: PaymentStatesEnum.SET_PAYMENT_AMOUNT,
+    onSave: async (value: string) => console.log(value),
   },
-  [PaymentStates.REVIEW]: {
-    nextState: PaymentStates.PAID,
-    prevState: PaymentStates.SET_DELIVERY_METHOD,
+  [PaymentStatesEnum.SET_DELIVERY_METHOD]: {
+    nextState: PaymentStatesEnum.REVIEW,
+    prevState: PaymentStatesEnum.SET_FUNDING_SOURCE,
+    onSave: async (value: string) => console.log(value),
   },
-  [PaymentStates.PAID]: {},
+  [PaymentStatesEnum.REVIEW]: {
+    nextState: PaymentStatesEnum.PAID,
+    prevState: PaymentStatesEnum.SET_DELIVERY_METHOD,
+    onSave: async (value: string) => console.log(value),
+  },
+  [PaymentStatesEnum.PAID]: {},
 };
 
-const usePayment = (initialState: PaymentStates = PaymentStates.DRAFT) => {
-  const [state, setState] = useState<PaymentStates>(initialState);
+const usePayment = () => {
+  const [state, setState] = useState<PaymentStatesEnum>(
+    PaymentStatesEnum.SET_PAYMENT_AMOUNT
+  );
 
-  const { nextState, prevState } = transitions[state];
+  const { nextState, prevState, onSave } = transitions[state];
 
-  const setNextState = nextState ? () => setState(nextState) : null;
-  const setPrevState = prevState ? () => setState(prevState) : null;
+  const onSaveClick = onSave ? (value: string) => onSave(value) : null;
+  const onNextClick = nextState ? () => setState(nextState) : null;
+  const onPrevClick = prevState ? () => setState(prevState) : null;
 
-  return { state, setNextState, setPrevState };
+  return { state, onSaveClick, onNextClick, onPrevClick };
 };
 
 export { usePayment };
