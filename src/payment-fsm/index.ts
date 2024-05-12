@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PaymentStatesEnum, Transitions } from './types';
 
 const transitions: Transitions = {
@@ -25,17 +25,24 @@ const transitions: Transitions = {
 };
 
 const usePayment = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [state, setState] = useState<PaymentStatesEnum>(
     PaymentStatesEnum.SET_PAYMENT_AMOUNT
   );
 
   const { nextState, prevState, onSave } = transitions[state];
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, [setIsLoading]);
+
   const onSaveClick = onSave ? (value: string) => onSave(value) : null;
   const onNextClick = nextState ? () => setState(nextState) : null;
   const onPrevClick = prevState ? () => setState(prevState) : null;
 
-  return { state, onSaveClick, onNextClick, onPrevClick };
+  return { isLoading, state, onSaveClick, onNextClick, onPrevClick };
 };
 
 export { usePayment };

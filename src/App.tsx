@@ -1,7 +1,12 @@
 import { usePayment } from './payment-fsm';
 
 function App() {
-  const { state, onNextClick, onPrevClick, onSaveClick } = usePayment();
+  const { isLoading, state, onNextClick, onPrevClick, onSaveClick } =
+    usePayment();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
