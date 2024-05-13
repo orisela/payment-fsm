@@ -1,5 +1,5 @@
 {
-  "name": "intuit-fsm",
+  "name": "payment-fsm",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
