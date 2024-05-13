@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import PaymentItem from '../components/PaymentItem';
+import Payment from '../components/Payment';
 
 const PaymentRoute = () => {
   const { paymentId } = useParams();
@@ -8,7 +8,7 @@ const PaymentRoute = () => {
     return <div>Loading payment route...</div>;
   }
 
-  return <PaymentItem paymentId={paymentId} />;
+  return <Payment paymentId={paymentId} />;
 };
 
 export default PaymentRoute;

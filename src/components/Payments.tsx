@@ -1,17 +1,17 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { usePayments } from '../hooks/usePayments';
 
 const Payments = () => {
   const navigate = useNavigate();
-  const { isLoading, paymentList, createPayment } = usePayments();
+  const { isLoading, payments, createPayment } = usePayments();
 
   if (isLoading) {
     return <div>Loading payment list...</div>;
   }
 
   const handleCreateNewClick = async () => {
-    const newPaymentId = await createPayment();
-    navigate(`/${newPaymentId}`);
+    const payment = await createPayment();
+    navigate(`/${payment.id}`);
   };
 
   return (
@@ -29,15 +29,15 @@ const Payments = () => {
           </tr>
         </thead>
         <tbody>
-          {paymentList.map((payment, index) => (
-            <tr key={payment['id']}>
+          {payments.map((payment, index) => (
+            <tr key={payment.id}>
               <td>#{index + 1}</td>
-              <td>{payment['amount']}</td>
-              <td>{payment['fundingSource']}</td>
-              <td>{payment['deliveryMethod']}</td>
-              <td>{payment['status']}</td>
+              <td>{payment.amount}</td>
+              <td>{payment.fundingSource}</td>
+              <td>{payment.deliveryMethod}</td>
+              <td>{payment.status}</td>
               <td>
-                <a href={`/${payment['id']}`}>View</a>
+                <Link to={`/${payment.id}`}>View</Link>
               </td>
             </tr>
           ))}

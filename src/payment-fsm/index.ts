@@ -3,46 +3,57 @@ import { PaymentStatesEnum, Transitions } from './types';
 
 const transitions: Transitions = {
   [PaymentStatesEnum.SET_PAYMENT_AMOUNT]: {
+    title: 'Set Payment Amount',
     nextState: PaymentStatesEnum.SET_FUNDING_SOURCE,
-    onSave: async (value: string) => console.log(value),
+    stateFieldKey: 'amount',
   },
   [PaymentStatesEnum.SET_FUNDING_SOURCE]: {
+    title: 'Set Funding Source',
     nextState: PaymentStatesEnum.SET_DELIVERY_METHOD,
     prevState: PaymentStatesEnum.SET_PAYMENT_AMOUNT,
-    onSave: async (value: string) => console.log(value),
+    stateFieldKey: 'fundingSource',
   },
   [PaymentStatesEnum.SET_DELIVERY_METHOD]: {
+    title: 'Set Delivery Method',
     nextState: PaymentStatesEnum.REVIEW,
     prevState: PaymentStatesEnum.SET_FUNDING_SOURCE,
-    onSave: async (value: string) => console.log(value),
+    stateFieldKey: 'deliveryMethod',
   },
   [PaymentStatesEnum.REVIEW]: {
-    nextState: PaymentStatesEnum.PAID,
+    title: 'Review',
+    nextState: PaymentStatesEnum.COMPLETED,
     prevState: PaymentStatesEnum.SET_DELIVERY_METHOD,
-    onSave: async (value: string) => console.log(value),
   },
-  [PaymentStatesEnum.PAID]: {},
+  [PaymentStatesEnum.COMPLETED]: {
+    title: 'Completed',
+    nextState: PaymentStatesEnum.COMPLETED,
+    prevState: PaymentStatesEnum.REVIEW,
+  },
 };
 
-const usePayment = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+const usePaymentFSM = (payment: any) => {
   const [state, setState] = useState<PaymentStatesEnum>(
     PaymentStatesEnum.SET_PAYMENT_AMOUNT
   );
 
-  const { nextState, prevState, onSave } = transitions[state];
-
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, [setIsLoading]);
+    if (payment && payment['status'] === PaymentStatesEnum.COMPLETED) {
+      setState(PaymentStatesEnum.COMPLETED);
+    }
+  }, [payment]);
 
-  const onSaveClick = onSave ? (value: string) => onSave(value) : null;
+  const { title, stateFieldKey, nextState, prevState } = transitions[state];
+
   const onNextClick = nextState ? () => setState(nextState) : null;
   const onPrevClick = prevState ? () => setState(prevState) : null;
 
-  return { isLoading, state, onSaveClick, onNextClick, onPrevClick };
+  return {
+    title,
+    stateFieldKey,
+    onNextClick,
+    onPrevClick,
+    nextState,
+  };
 };
 
-export { usePayment };
+export { usePaymentFSM };

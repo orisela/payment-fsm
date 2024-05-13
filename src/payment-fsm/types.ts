@@ -3,13 +3,15 @@ export enum PaymentStatesEnum {
   SET_FUNDING_SOURCE = 'set_funding_source',
   SET_DELIVERY_METHOD = 'set_delivery_method',
   REVIEW = 'review',
-  PAID = 'paid',
+  COMPLETED = 'completed',
 }
 
 type TransitionHandlers = {
+  title: string;
   nextState?: PaymentStatesEnum;
   prevState?: PaymentStatesEnum;
-  onSave?: (value: string) => Promise<void>;
+  stateFieldKey?: string;
+  saveValue?: (value?: string) => string;
 };
 
 export type Transitions = Record<PaymentStatesEnum, TransitionHandlers>;

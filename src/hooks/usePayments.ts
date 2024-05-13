@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react';
 import { getApi, postApi } from '../api';
+import { Payment } from '../types';
 
 const usePayments = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [paymentList, setPayments] = useState([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   useEffect(() => {
-    getApi('payments').then((response) => {
+    getApi<Payment[]>('payments').then((payments) => {
       setIsLoading(false);
-      setPayments(response.data);
+      setPayments(payments);
     });
   }, [setIsLoading, setPayments]);
 
   const createPayment = async () => {
-    const response = await postApi('payments');
-    return response.data.id;
+    const payment = await postApi<Payment>('payments');
+    return payment;
   };
 
-  return { isLoading, paymentList, createPayment };
+  return { isLoading, payments, createPayment };
 };
 
 export { usePayments };
