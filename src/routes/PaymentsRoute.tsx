@@ -1,7 +1,7 @@
-import PaymentList from '../components/PaymentList';
+import Payments from '../components/Payments';
 
 const PaymentsRoute = () => {
-  return <PaymentList />;
+  return <Payments />;
 };
 
 export default PaymentsRoute;

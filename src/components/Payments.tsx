@@ -1,30 +1,23 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { usePayments } from '../hooks/usePayments';
 
-const usePaymentList = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [paymentList, setPayments] = useState([]);
-
-  useEffect(() => {
-    axios.get('/api/payments').then((response) => {
-      setPayments(response.data);
-      setIsLoading(false);
-    });
-  }, []);
-
-  return { isLoading, paymentList };
-};
-
-const PaymentList = () => {
-  const { isLoading, paymentList } = usePaymentList();
+const Payments = () => {
+  const navigate = useNavigate();
+  const { isLoading, paymentList, createPayment } = usePayments();
 
   if (isLoading) {
     return <div>Loading payment list...</div>;
   }
 
+  const handleCreateNewClick = async () => {
+    const newPaymentId = await createPayment();
+    navigate(`/${newPaymentId}`);
+  };
+
   return (
     <div>
       <h1>Payments</h1>
+      <button onClick={handleCreateNewClick}>Create New</button>
       <table>
         <thead>
           <tr>
@@ -39,7 +32,7 @@ const PaymentList = () => {
           {paymentList.map((payment, index) => (
             <tr key={payment['id']}>
               <td>#{index + 1}</td>
-              <td>{payment['amount']}$</td>
+              <td>{payment['amount']}</td>
               <td>{payment['fundingSource']}</td>
               <td>{payment['deliveryMethod']}</td>
               <td>{payment['status']}</td>
@@ -54,4 +47,4 @@ const PaymentList = () => {
   );
 };
 
-export default PaymentList;
+export default Payments;
