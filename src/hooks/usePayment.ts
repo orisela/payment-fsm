@@ -1,6 +1,22 @@
 import { useEffect, useState } from 'react';
 import { getApi, patchApi } from '../api';
-import { Payment } from '../types';
+import { DeliveryMethod, FundingSource, Payment, Status } from '../types';
+
+const getPaymentStatus = (payment: Payment) => {
+  if (payment.amount === 0) {
+    return Status.IN_PROGRESS;
+  }
+
+  if (payment.fundingSource === FundingSource.UNKNOWN) {
+    return Status.IN_PROGRESS;
+  }
+
+  if (payment.deliveryMethod === DeliveryMethod.UNKNOWN) {
+    return Status.IN_PROGRESS;
+  }
+
+  return Status.COMPLETED;
+};
 
 const usePayment = (paymentId: string) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,10 +29,22 @@ const usePayment = (paymentId: string) => {
     });
   }, [paymentId]);
 
-  const savePayment = async (payment: any) =>
-    patchApi(`payments/${paymentId}`, payment);
+  const onChange = (newPayment: Partial<Payment>) => {
+    if (payment) {
+      setPayment({ ...payment, ...newPayment });
+    }
+  };
 
-  return { isLoading, payment, savePayment };
+  const onSave = async () => {
+    if (payment) {
+      await patchApi(`payments/${paymentId}`, {
+        ...payment,
+        status: getPaymentStatus(payment),
+      });
+    }
+  };
+
+  return { isLoading, payment, onChange, onSave };
 };
 
 export { usePayment };

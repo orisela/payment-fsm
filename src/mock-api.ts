@@ -29,20 +29,24 @@ const payments: any[] = [];
 for (let i = 0; i < 20; i++) {
   payments.push({
     id: paymentsId[i],
-    status: 'completed',
+    status: 'COMPLETED',
     amount: faker.number.int({ min: 100, max: 20000 }),
-    fundingSource: faker.helpers.arrayElement(['ach', 'credit', 'check']),
-    deliveryMethod: faker.helpers.arrayElement(['ach', 'check']),
+    fundingSource: faker.helpers.arrayElement([
+      'ACH',
+      'CREDIT_CARD',
+      'PAPER_CHECK',
+    ]),
+    deliveryMethod: faker.helpers.arrayElement(['ACH', 'PAPER_CHECK']),
   });
 }
 
 const createPayment = () => {
   return {
     id: crypto.randomUUID(),
-    status: 'in_progress',
-    amount: '',
-    fundingSource: '',
-    deliveryMethod: '',
+    status: 'IN_PROGRESS',
+    amount: 0,
+    fundingSource: 'UNKNOWN',
+    deliveryMethod: 'UNKNOWN',
   };
 };
 

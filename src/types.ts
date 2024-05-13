@@ -1,8 +1,20 @@
-type Status = 'in_progress' | 'completed';
+export enum Status {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
 
-type FundingSource = 'ach' | 'credit_card' | 'paper_check';
+export enum FundingSource {
+  UNKNOWN = 'UNKNOWN',
+  ACH = 'ACH',
+  CREDIT_CARD = 'CREDIT_CARD',
+  PAPER_CHECK = 'PAPER_CHECK',
+}
 
-type DeliveryMethod = 'ach' | 'paper_check';
+export enum DeliveryMethod {
+  UNKNOWN = 'UNKNOWN',
+  ACH = 'ACH',
+  PAPER_CHECK = 'PAPER_CHECK',
+}
 
 export type Payment = {
   id: string;
