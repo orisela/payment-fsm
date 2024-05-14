@@ -29,18 +29,16 @@ const usePayment = (paymentId: string) => {
     });
   }, [paymentId]);
 
-  const onChange = (newPayment: Partial<Payment>) => {
+  const onChange = (newPaymentAttr: Partial<Payment>) => {
     if (payment) {
-      setPayment({ ...payment, ...newPayment });
+      const newPayment = { ...payment, ...newPaymentAttr };
+      setPayment({ ...newPayment, status: getPaymentStatus(newPayment) });
     }
   };
 
   const onSave = async () => {
     if (payment) {
-      await patchApi(`payments/${paymentId}`, {
-        ...payment,
-        status: getPaymentStatus(payment),
-      });
+      await patchApi(`payments/${paymentId}`, payment);
     }
   };
 
