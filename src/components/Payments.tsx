@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { usePayments } from '../hooks/usePayments';
-import { Typography, Table, Button, Divider, Breadcrumb } from 'antd';
+import { Typography, Table, Button, Divider, Breadcrumb, Spin } from 'antd';
 import { paymentColumns } from '../utils';
 
 const Payments = () => {
@@ -8,7 +8,7 @@ const Payments = () => {
   const { isLoading, payments, createPayment } = usePayments();
 
   if (isLoading) {
-    return <div>Loading payment list...</div>;
+    return <Spin />;
   }
 
   const handleCreateNewClick = async () => {

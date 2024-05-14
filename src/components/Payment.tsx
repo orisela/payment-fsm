@@ -12,6 +12,7 @@ import {
   Button,
   Divider,
   Tag,
+  Spin,
 } from 'antd';
 import { mapStatusToColor, mapValueToText } from '../utils';
 
@@ -42,7 +43,7 @@ const Payment: FC<PaymentProps> = ({ paymentId }) => {
   const { state, transition } = useFsm(fsmConfig);
 
   if (isLoading) {
-    return <div>Payment {paymentId} loading...</div>;
+    return <Spin />;
   }
 
   if (!payment) {
