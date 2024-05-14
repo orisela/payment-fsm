@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { usePayments } from '../hooks/usePayments';
-import { Typography, Table, Button, Divider } from 'antd';
+import { Typography, Table, Button, Divider, Breadcrumb } from 'antd';
 import { paymentColumns } from '../utils';
 
 const Payments = () => {
@@ -18,6 +18,7 @@ const Payments = () => {
 
   return (
     <div>
+      <Breadcrumb items={[{ title: 'Payments' }]} />
       <Typography.Title>Payments ({payments.length}) </Typography.Title>
       <Button type="primary" onClick={handleCreateNewClick}>
         Create New Payment

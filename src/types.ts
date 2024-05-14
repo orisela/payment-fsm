@@ -23,3 +23,9 @@ export type Payment = {
   fundingSource: FundingSource;
   deliveryMethod: DeliveryMethod;
 };
+
+export enum PaymentState {
+  SET_AMOUNT = 'setAmount',
+  SET_FUNDING_SOURCE = 'setFundingSource',
+  SET_DELIVERY_METHOD = 'setDeliveryMethod',
+}

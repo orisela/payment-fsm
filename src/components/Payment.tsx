@@ -1,14 +1,19 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useFsm } from '../fsm/useFsm';
 import { usePayment } from '../hooks/usePayment';
-import { FundingSource, DeliveryMethod } from '../types';
+import { FundingSource, DeliveryMethod, PaymentState } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
-
-enum PaymentState {
-  SET_AMOUNT = 'setAmount',
-  SET_FUNDING_SOURCE = 'setFundingSource',
-  SET_DELIVERY_METHOD = 'setDeliveryMethod',
-}
+import {
+  Breadcrumb,
+  Typography,
+  Input,
+  Select,
+  Space,
+  Button,
+  Divider,
+  Tag,
+} from 'antd';
+import { mapStatusToColor, mapValueToText } from '../utils';
 
 const fsmConfig = {
   initial: PaymentState.SET_AMOUNT,
@@ -34,7 +39,7 @@ const Payment: FC<PaymentProps> = ({ paymentId }) => {
   const navigate = useNavigate();
 
   const { payment, isLoading, onChange, onSave } = usePayment(paymentId);
-  const { state, transition, nextState, prevState } = useFsm(fsmConfig);
+  const { state, transition } = useFsm(fsmConfig);
 
   if (isLoading) {
     return <div>Payment {paymentId} loading...</div>;
@@ -51,43 +56,58 @@ const Payment: FC<PaymentProps> = ({ paymentId }) => {
 
   return (
     <div>
+      <Breadcrumb
+        items={[{ title: <Link to="/">Payments</Link> }, { title: paymentId }]}
+      />
+      <Divider />
+
+      <Tag color={mapStatusToColor[payment.status]}>
+        {mapValueToText[payment.status]}
+      </Tag>
+      <Typography.Title>
+        {mapValueToText[state as PaymentState]}
+      </Typography.Title>
+
       <div>
-        <Link to="/">Payments</Link> {' / '}{' '}
-        <Link to={`/${paymentId}`}>{paymentId}</Link>
+        <Space.Compact>
+          {state === PaymentState.SET_AMOUNT && (
+            <PaymentFieldInputNumber
+              value={payment.amount}
+              onChange={(newValue) => onChange({ amount: newValue })}
+            />
+          )}
+
+          {state === PaymentState.SET_FUNDING_SOURCE && (
+            <PaymentFieldSelect
+              value={payment.fundingSource}
+              onChange={(newValue) =>
+                onChange({ fundingSource: newValue as FundingSource })
+              }
+              options={Object.keys(FundingSource)}
+            />
+          )}
+
+          {state === PaymentState.SET_DELIVERY_METHOD && (
+            <PaymentFieldSelect
+              value={payment.deliveryMethod}
+              onChange={(newValue) =>
+                onChange({ deliveryMethod: newValue as DeliveryMethod })
+              }
+              options={Object.keys(DeliveryMethod)}
+            />
+          )}
+        </Space.Compact>
       </div>
 
-      <h1>{state}</h1>
-      <div>
-        {state === PaymentState.SET_AMOUNT && (
-          <PaymentFieldInputNumber
-            value={payment.amount}
-            onChange={(newValue) => onChange({ amount: newValue })}
-          />
-        )}
+      <Button onClick={() => transition.prev()}>{'<-'} Prev</Button>
+      <Button type="primary" onClick={() => transition.next()}>
+        Next {'->'}
+      </Button>
+      <Divider />
 
-        {state === PaymentState.SET_FUNDING_SOURCE && (
-          <PaymentFieldSelect
-            value={payment.fundingSource}
-            onChange={(newValue) =>
-              onChange({ fundingSource: newValue as FundingSource })
-            }
-            options={Object.keys(FundingSource)}
-          />
-        )}
-
-        {state === PaymentState.SET_DELIVERY_METHOD && (
-          <PaymentFieldSelect
-            value={payment.deliveryMethod}
-            onChange={(newValue) =>
-              onChange({ deliveryMethod: newValue as DeliveryMethod })
-            }
-            options={Object.keys(DeliveryMethod)}
-          />
-        )}
-      </div>
-      <button onClick={() => transition.next()}>{nextState}</button>
-      <button onClick={() => transition.prev()}>{prevState}</button>
-      <button onClick={handleSaveClick}>Save & Exit</button>
+      <Button type="primary" onClick={handleSaveClick}>
+        Save & Exit
+      </Button>
     </div>
   );
 };
@@ -101,8 +121,9 @@ const PaymentFieldInputNumber: FC<PaymentFieldInputNumberProps> = ({
   value,
   onChange,
 }) => (
-  <input
+  <Input
     type="number"
+    width={500}
     value={value}
     onChange={(e) => onChange(Number(e.target.value) ?? 0)}
   />
@@ -119,11 +140,11 @@ const PaymentFieldSelect: FC<PaymentFieldSelectProps> = ({
   onChange,
   options,
 }) => (
-  <select value={value} onChange={(e) => onChange(e.target.value)}>
+  <Select value={value} onChange={onChange}>
     {options.map((option) => (
       <option key={option}>{option}</option>
     ))}
-  </select>
+  </Select>
 );
 
 export default Payment;

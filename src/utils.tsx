@@ -5,11 +5,20 @@ import { RiBankFill } from 'react-icons/ri';
 import { TbCashBanknote } from 'react-icons/tb';
 import { RiBankCard2Line } from 'react-icons/ri';
 import { GrStatusUnknown } from 'react-icons/gr';
-import { DeliveryMethod, FundingSource, Payment, Status } from './types';
+import {
+  DeliveryMethod,
+  FundingSource,
+  Payment,
+  PaymentState,
+  Status,
+} from './types';
 
 export const mapValueToText = {
   [Status.COMPLETED]: 'Completed',
   [Status.IN_PROGRESS]: 'In Progress',
+  [PaymentState.SET_AMOUNT]: 'Set Amount',
+  [PaymentState.SET_FUNDING_SOURCE]: 'Set Funding Source',
+  [PaymentState.SET_DELIVERY_METHOD]: 'Set Delivery Method',
 };
 
 export const mapStatusToColor = {
