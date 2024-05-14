@@ -1,5 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { usePayments } from '../hooks/usePayments';
+import { Typography, Table, Button, Divider } from 'antd';
+import { paymentColumns } from '../utils';
 
 const Payments = () => {
   const navigate = useNavigate();
@@ -16,33 +18,12 @@ const Payments = () => {
 
   return (
     <div>
-      <h1>Payments</h1>
-      <button onClick={handleCreateNewClick}>Create New</button>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Amount</th>
-            <th>Funding Source</th>
-            <th>Delivery Method</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {payments.map((payment, index) => (
-            <tr key={payment.id}>
-              <td>#{index + 1}</td>
-              <td>{payment.amount}</td>
-              <td>{payment.fundingSource}</td>
-              <td>{payment.deliveryMethod}</td>
-              <td>{payment.status}</td>
-              <td>
-                <Link to={`/${payment.id}`}>View</Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Typography.Title>Payments ({payments.length}) </Typography.Title>
+      <Button type="primary" onClick={handleCreateNewClick}>
+        Create New Payment
+      </Button>
+      <Divider />
+      <Table columns={paymentColumns} dataSource={payments} />
     </div>
   );
 };

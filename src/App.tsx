@@ -11,12 +11,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<PaymentsRoute />} />
-        <Route path="/:paymentId" element={<PaymentRoute />} />
-      </Routes>
-    </BrowserRouter>
+    <div style={{ padding: '30px' }}>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<PaymentsRoute />} />
+          <Route path="/:paymentId" element={<PaymentRoute />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
