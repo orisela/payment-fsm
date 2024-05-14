@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useFsm } from '../fsm/useFsm';
 import { usePayment } from '../hooks/usePayment';
 import { FundingSource, DeliveryMethod, PaymentState } from '../types';
